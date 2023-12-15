@@ -1,0 +1,3 @@
+{
+  "extends": "@retestlabs/typescript-config/base.json"
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "@retestlabs/typescript-config/react-library.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

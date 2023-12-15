@@ -1,0 +1,46 @@
+{
+  "name": "web",
+  "license": "AGPL-3.0-or-later",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@retestlabs/ui": "workspace:*",
+    "@retestlabs/utils": "workspace:*",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss-animate": "^1.0.7",
+    "lucide-react": "^0.294.0",
+    "@tanstack/react-query": "^4.18.0",
+    "@trpc/client": "^10.44.1",
+    "@trpc/react-query": "^10.44.1",
+    "@trpc/server": "^10.44.1",
+    "@xata.io/client": "^0.28.0",
+    "date-fns": "^2.30.0",
+    "next-themes": "^0.2.1",
+    "superjson": "^2.2.1",
+    "zod": "^3.22.4",
+    "class-variance-authority": "^0.7.0"
+  },
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^14.0.4",
+    "@retestlabs/eslint-config": "workspace:*",
+    "@retestlabs/tailwind-config": "workspace:*",
+    "@retestlabs/typescript-config": "workspace:*",
+    "@types/eslint": "^8.44.9",
+    "@types/node": "^17.0.45",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.55.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3"
+  }
+}
