@@ -40,6 +40,23 @@ export const appRouter = router({
       let experiment = await xata.db.experiments.create(input);
       return experiment;
     }),
+  deleteExperiment: publicProcedure
+    .input(z.object({ experimentId: z.string() }))
+    .mutation(async (opts) => {
+      const { input } = opts;
+      let experiment = await xata.db.experiments.read(
+        input.experimentId.replace("exp_", "rec_"),
+      );
+
+      if (!experiment) {
+        throw new Error("Experiment not found");
+      }
+
+      await experiment.delete();
+
+      return experiment;
+    }),
+
   createEvent: publicProcedure
     .input(
       z.object({

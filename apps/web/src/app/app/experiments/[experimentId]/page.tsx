@@ -4,6 +4,7 @@ import { getXataClient } from "@/lib/xata";
 
 import { Events } from "./events";
 import { Variants } from "./varitants";
+import { DeleteForm } from "./delete-form";
 
 let xata = getXataClient();
 
@@ -25,6 +26,8 @@ const Page = async ({ params }: { params: { experimentId: string } }) => {
       <div className="space-y-8 w-64">
         <Events />
         <Variants />
+
+        <DeleteForm id={experiment.id} name={experiment.name} />
       </div>
     </div>
   );

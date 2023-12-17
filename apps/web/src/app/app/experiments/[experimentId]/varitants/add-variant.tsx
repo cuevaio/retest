@@ -54,7 +54,7 @@ export const AddVariant = () => {
 
             <p className="flex-grow px-3 text-sm text-left">Add a variant</p>
           </div>
-        </PopoverTrigger>{" "}
+        </PopoverTrigger>
         <PopoverContent className="w-64 p-2" side="right">
           <form
             className="space-y-4"

@@ -3,6 +3,7 @@ import { type ExperimentsRecord } from "@/lib/xata";
 import { cva, type VariantProps } from "class-variance-authority";
 import { formatDistance } from "date-fns";
 import Link from "next/link";
+import { Badge } from "@retestlabs/ui/badge";
 
 const experimentCardVariants = cva("p-4 rounded-lg border", {
   variants: {
@@ -38,9 +39,14 @@ export const ExperimentCard = ({
   endedAt,
   variant,
   startedAt,
+  variantCount,
 }: ExperimentCardProps) => {
   return (
-    <div className={cn(experimentCardVariants({ variant }))}>
+    <div
+      className={cn(experimentCardVariants({ variant }), {
+        "bg-red-600/20 border-red-600 relative": variantCount === 0,
+      })}
+    >
       <Link
         href={"/app/experiments/" + id.replace("rec_", "exp_")}
         className="font-bold text-lg hover:underline"
@@ -66,6 +72,11 @@ export const ExperimentCard = ({
             )
           : "xd"}
       </p>
+      {variantCount === 0 && (
+        <Badge variant="destructive" className="absolute top-4 right-4">
+          0 Variants
+        </Badge>
+      )}
     </div>
   );
 };

@@ -40,8 +40,6 @@ const Page = () => {
           const data = Object.fromEntries(formData.entries());
 
           const name = data["experiment-name"] as string;
-          const description =
-            (data["experiment-description"] as string) || undefined;
           const startedAt = new Date(data["experiment-startedAt"] as string);
           const endedAt = new Date(data["experiment-endedAt"] as string);
           const sampleSizeAbsolute =
@@ -53,7 +51,6 @@ const Page = () => {
 
           createExperiment.mutate({
             name,
-            description,
             startedAt,
             endedAt,
             sampleSizeAbsolute,
@@ -76,19 +73,7 @@ const Page = () => {
             required
           ></Input>
         </div>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="experiment-description">Description</Label>
-            <InputHint>
-              Optional: Describe what you are testing and why. This will help
-              you and your team understand the experiment later.
-            </InputHint>
-          </div>
-          <Textarea
-            id="experiment-description"
-            name="experiment-description"
-          ></Textarea>
-        </div>
+
         <DurationInput />
         <SampleSizeInput />
         <div className="flex justify-between">
