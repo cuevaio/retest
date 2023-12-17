@@ -2,7 +2,8 @@
   "name": "@retestlabs/utils",
   "version": "0.0.1",
   "exports": {
-    "./cn": "./src/cn.ts"
+    "./cn": "./src/cn.ts",
+    ".": "./src/index.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0"

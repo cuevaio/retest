@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://retest-cv9l0q.us-east-1.xata.sh/db/retest",
+  "codegen": {
+    "output": "src/lib/xata.ts"
+  }
+}

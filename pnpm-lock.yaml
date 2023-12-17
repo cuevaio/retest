@@ -33,6 +33,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@retestlabs/nextjs':
+        specifier: workspace:*
+        version: link:../../packages/nextjs
       '@retestlabs/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -107,7 +110,7 @@ importers:
         specifier: ^10.44.1
         version: 10.44.1
       '@xata.io/client':
-        specifier: ^0.28.0
+        specifier: ^0.28.1
         version: 0.28.1(typescript@5.3.3)
       class-variance-authority:
         specifier: ^0.7.0
@@ -200,6 +203,61 @@ importers:
       eslint-plugin-only-warn:
         specifier: ^1.1.0
         version: 1.1.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
+
+  packages/nextjs:
+    dependencies:
+      '@retestlabs/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@tanstack/react-query':
+        specifier: ^4.18.0
+        version: 4.36.1(react-dom@18.2.0)(react@18.2.0)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.14.0
+        version: 5.14.0(@tanstack/react-query@4.36.1)(react@18.2.0)
+      '@types/ua-parser-js':
+        specifier: ^0.7.39
+        version: 0.7.39
+      next:
+        specifier: ^14.0.4
+        version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      swr:
+        specifier: ^2.2.4
+        version: 2.2.4(react@18.2.0)
+      ua-parser-js:
+        specifier: ^1.0.37
+        version: 1.0.37
+    devDependencies:
+      '@retestlabs/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@retestlabs/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@tanstack/eslint-plugin-query':
+        specifier: ^5.12.1
+        version: 5.12.1(eslint@8.55.0)(typescript@5.3.3)
+      '@types/eslint':
+        specifier: ^8.44.7
+        version: 8.44.9
+      '@types/node':
+        specifier: ^20.5.2
+        version: 20.10.4
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.2.45
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.2.17
+      eslint:
+        specifier: ^8.53.0
+        version: 8.55.0
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
@@ -1636,8 +1694,35 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@tanstack/eslint-plugin-query@5.12.1(eslint@8.55.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-FuG/mN9cUO8KlT7KJzl8Yiw55uyXz1vzxXfoMnBbgiH8vk5WtUbEMdFeDF4ujgO+VSKR10uDdZ1+TIOpHhDUfQ==}
+    peerDependencies:
+      eslint: ^8.0.0
+    dependencies:
+      '@typescript-eslint/utils': 5.62.0(eslint@8.55.0)(typescript@5.3.3)
+      eslint: 8.55.0
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+    dev: true
+
   /@tanstack/query-core@4.36.1:
     resolution: {integrity: sha512-DJSilV5+ytBP1FbFcEJovv4rnnm/CokuVvrBEtW/Va9DvuJ3HksbXUJEpI0aV1KtuL4ZoO9AVE6PyNLzF7tLeA==}
+    dev: false
+
+  /@tanstack/query-devtools@5.13.5:
+    resolution: {integrity: sha512-effSYz9AWcZ6sNd+c8LCBYFIuDZApoCTXEpRlEYChBZpMz9QUUVMLToThwCyUY49+T5pANL3XxgZf3HV7hwJlg==}
+    dev: false
+
+  /@tanstack/react-query-devtools@5.14.0(@tanstack/react-query@4.36.1)(react@18.2.0):
+    resolution: {integrity: sha512-A/I/jYeyyNduI3+Kb84emkvqw5YOt7+MpO1ZpfYFyfHzCd5dQ7nWuCZzI67gS/JARwqRfGkuuuJkTfuKnipEzA==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.14.0
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-devtools': 5.13.5
+      '@tanstack/react-query': 4.36.1(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
     dev: false
 
   /@tanstack/react-query@4.36.1(react-dom@18.2.0)(react@18.2.0):
@@ -1741,6 +1826,10 @@ packages:
   /@types/semver@7.5.6:
     resolution: {integrity: sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==}
     dev: true
+
+  /@types/ua-parser-js@0.7.39:
+    resolution: {integrity: sha512-P/oDfpofrdtF5xw433SPALpdSchtJmY7nsJItf8h3KXqOslkbySh8zq4dSWXH2oTjRvJ5PczVEoCZPow6GicLg==}
+    dev: false
 
   /@typescript-eslint/eslint-plugin@6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.55.0)(typescript@5.3.3):
     resolution: {integrity: sha512-1ZJBykBCXaSHG94vMMKmiHoL0MhNHKSVlcHVYZNw+BKxufhqQVTOawNpwwI1P5nIFZ/4jLVop0mcY6mJJDFNaw==}
@@ -4760,6 +4849,16 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  /swr@2.2.4(react@18.2.0):
+    resolution: {integrity: sha512-njiZ/4RiIhoOlAaLYDqwz5qH/KZXVilRLvomrx83HjzCWTfa+InyfAjv05PSFxnmLzZkNO9ZfvgoqzAaEI4sGQ==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      client-only: 0.0.1
+      react: 18.2.0
+      use-sync-external-store: 1.2.0(react@18.2.0)
+    dev: false
+
   /synckit@0.8.6:
     resolution: {integrity: sha512-laHF2savN6sMeHCjLRkheIU4wo3Zg9Ln5YOjOo7sZ5dVQW8yF5pPE5SIw1dsPhq3TRp1jisKRCdPhfs/1WMqDA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -5010,6 +5109,10 @@ packages:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /ua-parser-js@1.0.37:
+    resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
+    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
