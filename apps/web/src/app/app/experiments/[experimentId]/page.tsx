@@ -1,7 +1,10 @@
+import { notFound } from "next/navigation";
+
 import { getXataClient } from "@/lib/xata";
 
-import { notFound } from "next/navigation";
 import { Metrics } from "./metrics";
+import { Variants } from "./varitants";
+
 let xata = getXataClient();
 
 const Page = async ({ params }: { params: { experimentId: string } }) => {
@@ -19,7 +22,10 @@ const Page = async ({ params }: { params: { experimentId: string } }) => {
   return (
     <div>
       <h1>{experiment.name}</h1>
-      <Metrics />
+      <div className="space-y-8 w-64">
+        <Metrics />
+        <Variants />
+      </div>
     </div>
   );
 };

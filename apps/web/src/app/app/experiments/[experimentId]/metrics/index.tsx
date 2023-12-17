@@ -19,7 +19,7 @@ export const Metrics = () => {
   let metrics = listMetrics.data;
 
   return (
-    <div className="w-min rounded border">
+    <div className="w-full rounded border">
       <div className="flex px-4 py-2 items-center text-primary bg-muted">
         <div className="flex-0">
           <LineChartIcon className="w-4 h-4 font-light" />

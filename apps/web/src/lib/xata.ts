@@ -21,6 +21,7 @@ const tables = [
       { name: "sampleSizeRelative", type: "float" },
       { name: "startedAt", type: "datetime" },
       { name: "endedAt", type: "datetime" },
+      { name: "variantCount", type: "int", notNull: true, defaultValue: "0" },
     ],
     revLinks: [
       { column: "experiment", table: "variants" },
