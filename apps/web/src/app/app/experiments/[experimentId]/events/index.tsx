@@ -5,18 +5,18 @@ import { useParams } from "next/navigation";
 
 import { CheckSquareIcon, LineChartIcon } from "lucide-react";
 
-import { AddMetric } from "./add-metric";
-import { MetricCard } from "./metric-card";
+import { AddEvent } from "./add-event";
+import { EventCard } from "./event-card";
 
-export const Metrics = () => {
+export const Events = () => {
   let { experimentId } = useParams<{ experimentId: string }>();
-  let listMetrics = trpc.listMetrics.useQuery({ experimentId });
+  let listEvents = trpc.listEvents.useQuery({ experimentId });
 
-  if (!listMetrics.data) {
+  if (!listEvents.data) {
     return null;
   }
 
-  let metrics = listMetrics.data;
+  let events = listEvents.data;
 
   return (
     <div className="w-full rounded border">
@@ -24,7 +24,7 @@ export const Metrics = () => {
         <div className="flex-0">
           <LineChartIcon className="w-4 h-4 font-light" />
         </div>
-        <p className="flex-grow px-3 font-bold">Metrics</p>
+        <p className="flex-grow px-3 font-bold">Events</p>
       </div>
       <div className="flex px-4 py-2 items-center border-t text-muted-foreground">
         <div className="flex-0">
@@ -32,10 +32,10 @@ export const Metrics = () => {
         </div>
         <p className="flex-grow px-3 text-sm">impressions</p>
       </div>
-      {metrics.map((metric) => (
-        <MetricCard key={metric.id} {...metric} />
+      {events.map((event) => (
+        <EventCard key={event.id} {...event} />
       ))}
-      <AddMetric />
+      <AddEvent />
     </div>
   );
 };

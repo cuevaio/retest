@@ -25,7 +25,7 @@ import { useToast } from "@retestlabs/ui/use-toast";
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
-const metricTypes = [
+const eventTypes = [
   {
     name: "conversion",
     icon: HashIcon,
@@ -41,13 +41,13 @@ const metricTypes = [
 ] as const;
 
 // use ts types to extract all the names
-type options = (typeof metricTypes)[number]["name"];
+type options = (typeof eventTypes)[number]["name"];
 
-export const AddMetric = () => {
+export const AddEvent = () => {
   let { experimentId } = useParams<{ experimentId: string }>();
   const { toast } = useToast();
 
-  let [selectedMetricType, setSelectedMetricType] = React.useState<
+  let [selectedEventType, setSelectedEventType] = React.useState<
     options | undefined
   >(undefined);
 
@@ -55,15 +55,15 @@ export const AddMetric = () => {
   let [openFormModal, setOpenFormModal] = React.useState(false);
 
   let queryClient = useQueryClient();
-  let listMetrics = getQueryKey(trpc.listMetrics, { experimentId }, "query");
-  let createMetric = trpc.createMetric.useMutation({
+  let listEvents = getQueryKey(trpc.listEvents, { experimentId }, "query");
+  let createEvent = trpc.createEvent.useMutation({
     onSuccess: (data) => {
       setOpenFormModal(false);
       toast({
-        title: "Metric created",
+        title: "Event created",
         description: "ID: " + data.id,
       });
-      queryClient.invalidateQueries(listMetrics);
+      queryClient.invalidateQueries(listEvents);
     },
   });
 
@@ -76,26 +76,26 @@ export const AddMetric = () => {
               <PlusIcon className="w-4 h-4 font-light" />
             </div>
 
-            <p className="flex-grow px-3 text-sm text-left">Add a metric</p>
+            <p className="flex-grow px-3 text-sm text-left">Add a event</p>
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-32 p-0" side="right">
           <div className="">
-            {metricTypes.map((metricType) => (
+            {eventTypes.map((eventType) => (
               <button
                 onClick={() => {
-                  setSelectedMetricType(metricType.name);
+                  setSelectedEventType(eventType.name);
                   setOpenTypeModal(false);
                   setOpenFormModal(true);
                 }}
-                key={metricType.name}
+                key={eventType.name}
                 className="w-full flex px-4 py-2 items-center text-muted-foreground hover:bg-muted"
               >
                 <div className="flex-0">
-                  <metricType.icon className="w-4 h-4 font-light" />
+                  <eventType.icon className="w-4 h-4 font-light" />
                 </div>
                 <p className="flex-grow px-3 text-sm text-left">
-                  {metricType.name}
+                  {eventType.name}
                 </p>
               </button>
             ))}
@@ -113,12 +113,12 @@ export const AddMetric = () => {
               let formData = new FormData(event.currentTarget);
               let name = formData.get("name") as string;
 
-              if (!selectedMetricType) {
+              if (!selectedEventType) {
                 return;
               }
-              createMetric.mutate({
+              createEvent.mutate({
                 name,
-                type: selectedMetricType,
+                type: selectedEventType,
                 experimentId,
               });
             }}
@@ -130,16 +130,16 @@ export const AddMetric = () => {
             <div className="space-y-2">
               <Label htmlFor="type">Type</Label>
               <Select
-                value={selectedMetricType}
-                onValueChange={(value: options) => setSelectedMetricType(value)}
+                value={selectedEventType}
+                onValueChange={(value: options) => setSelectedEventType(value)}
               >
                 <SelectTrigger className="w-full" name="type" id="type">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent id="type">
-                  {metricTypes.map((metricType) => (
-                    <SelectItem key={metricType.name} value={metricType.name}>
-                      {metricType.name}
+                  {eventTypes.map((eventType) => (
+                    <SelectItem key={eventType.name} value={eventType.name}>
+                      {eventType.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -150,7 +150,7 @@ export const AddMetric = () => {
                 type="button"
                 variant="secondary"
                 size="sm"
-                disabled={createMetric.isLoading}
+                disabled={createEvent.isLoading}
                 onClick={() => {
                   setOpenFormModal(false);
                 }}
@@ -158,7 +158,7 @@ export const AddMetric = () => {
                 Back
               </Button>
               <Button type="submit" size="sm">
-                Add metric
+                Add event
               </Button>
             </div>
           </form>

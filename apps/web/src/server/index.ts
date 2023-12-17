@@ -40,7 +40,7 @@ export const appRouter = router({
       let experiment = await xata.db.experiments.create(input);
       return experiment;
     }),
-  createMetric: publicProcedure
+  createEvent: publicProcedure
     .input(
       z.object({
         experimentId: z.string(),
@@ -50,41 +50,119 @@ export const appRouter = router({
     )
     .mutation(async (opts) => {
       const { input } = opts;
-      let metric = await xata.db.metrics.create({
-        name: input.name,
-        type: input.type,
-        experiment: input.experimentId.replace("exp_", "rec_"),
-      });
-      return metric;
+      // CHECK IF EXPERIMENT EXISTS
+      let experiment = await xata.db.experiments.read(
+        input.experimentId.replace("exp_", "rec_"),
+      );
+
+      if (!experiment) {
+        throw new Error("Experiment not found");
+      }
+
+      // CHECK IF THERE IS AN EVENT WITH THE SAME NAME
+      let sameNameEvent = await xata.db.events
+        .filter({
+          "experiment.id": input.experimentId.replace("exp_", "rec_"),
+          name: input.name,
+        })
+        .getFirst();
+
+      if (sameNameEvent) {
+        throw new Error("Event with the same name already exists");
+      }
+
+      let [event, updated_experiment] = await Promise.all([
+        xata.db.events.create({
+          name: input.name,
+          type: input.type,
+          experiment: input.experimentId.replace("exp_", "rec_"),
+        }),
+
+        experiment.update({
+          eventCount: {
+            $increment: 1,
+          },
+        }),
+      ]);
+
+      return event;
     }),
-  listMetrics: publicProcedure
+  listEvents: publicProcedure
     .input(z.object({ experimentId: z.string() }))
     .query(async (opts) => {
       const { input } = opts;
-      let metrics = await xata.db.metrics
+      let events = await xata.db.events
         .filter({
           experiment: input.experimentId.replace("exp_", "rec_"),
         })
         .getAll();
-      return metrics;
+      return events;
     }),
 
-  renameMetric: publicProcedure
-    .input(z.object({ metricId: z.string(), name: z.string() }))
+  renameEvent: publicProcedure
+    .input(z.object({ eventId: z.string(), name: z.string() }))
     .mutation(async (opts) => {
       const { input } = opts;
-      let metric = await xata.db.metrics.update(input.metricId, {
+      let event = await xata.db.events.read(input.eventId);
+
+      if (!event) {
+        throw new Error("Event not found");
+      }
+
+      if (!event.experiment) {
+        throw new Error("Event has no experiment");
+      }
+
+      // CHECK IF THERE IS AN EVENT WITH THE SAME NAME
+      let sameNameEvent = await xata.db.events
+        .filter({
+          "experiment.id": event.experiment.id,
+          name: input.name,
+        })
+        .getFirst();
+
+      if (sameNameEvent) {
+        throw new Error("Event with the same name already exists");
+      }
+
+      await event.update({
         name: input.name,
       });
-      return metric;
+
+      return event;
     }),
 
-  deleteMetric: publicProcedure
-    .input(z.object({ metricId: z.string() }))
+  deleteEvent: publicProcedure
+    .input(z.object({ eventId: z.string() }))
     .mutation(async (opts) => {
       const { input } = opts;
-      let metric = await xata.db.metrics.delete(input.metricId);
-      return metric;
+
+      let event = await xata.db.events.read(input.eventId);
+
+      if (!event) {
+        throw new Error("Event not found");
+      }
+
+      if (!event.experiment) {
+        throw new Error("Event has no experiment");
+      }
+
+      let experiment = await xata.db.experiments.read(event.experiment.id);
+
+      if (!experiment) {
+        throw new Error("Experiment not found");
+      }
+
+      await Promise.all([
+        event.delete(),
+        experiment.update({
+          eventCount: {
+            $decrement: 1,
+          },
+        }),
+      ]);
+
+      return event;
     }),
 
   createVariant: publicProcedure
@@ -117,16 +195,18 @@ export const appRouter = router({
         throw new Error("Variant with the same name already exists");
       }
 
-      let variant = await xata.db.variants.create({
-        name: input.name,
-        experiment: input.experimentId.replace("exp_", "rec_"),
-      });
+      let [variant, updated_experiment] = await Promise.all([
+        xata.db.variants.create({
+          name: input.name,
+          experiment: input.experimentId.replace("exp_", "rec_"),
+        }),
 
-      await experiment.update({
-        variantCount: {
-          $increment: 1,
-        },
-      });
+        experiment.update({
+          variantCount: {
+            $increment: 1,
+          },
+        }),
+      ]);
 
       return variant;
     }),

@@ -23,7 +23,7 @@ import { getQueryKey } from "@trpc/react-query";
 import { useParams } from "next/navigation";
 import { trpc } from "@/lib/trpc";
 
-export const MetricCard = ({
+export const EventCard = ({
   name,
   type,
   id,
@@ -40,37 +40,37 @@ export const MetricCard = ({
   const { toast } = useToast();
 
   let queryClient = useQueryClient();
-  let listMetrics = getQueryKey(trpc.listMetrics, { experimentId }, "query");
+  let listEvents = getQueryKey(trpc.listEvents, { experimentId }, "query");
 
-  let renameMetric = trpc.renameMetric.useMutation({
+  let renameEvent = trpc.renameEvent.useMutation({
     onSuccess: (data) => {
       if (!data) {
         toast({
-          title: "Error renaming metric",
+          title: "Error renaming event",
         });
       }
 
       setOpenRenamePopover(false);
       toast({
-        title: "Metric renamed",
+        title: "Event renamed",
       });
-      queryClient.invalidateQueries(listMetrics);
+      queryClient.invalidateQueries(listEvents);
     },
   });
 
-  let removeMetric = trpc.deleteMetric.useMutation({
+  let removeEvent = trpc.deleteEvent.useMutation({
     onSuccess: (data) => {
       if (!data) {
         toast({
-          title: "Error removing metric",
+          title: "Error removing event",
         });
       }
 
       setOpenRemovePopover(false);
       toast({
-        title: "Metric removed",
+        title: "Event removed",
       });
-      queryClient.invalidateQueries(listMetrics);
+      queryClient.invalidateQueries(listEvents);
     },
   });
 
@@ -114,7 +114,7 @@ export const MetricCard = ({
                     <PenLineIcon className="w-4 h-4" />
                   </div>
                   <p className="flex-grow px-3 text-sm text-left">
-                    Rename metric
+                    Rename event
                   </p>
                 </button>
                 <button
@@ -128,7 +128,7 @@ export const MetricCard = ({
                     <TrashIcon className="w-4 h-4" />
                   </div>
                   <p className="flex-grow px-3 text-sm text-left">
-                    Remove metric
+                    Remove event
                   </p>
                 </button>
               </div>
@@ -144,7 +144,7 @@ export const MetricCard = ({
                   event.preventDefault();
                   let formData = new FormData(event.currentTarget);
                   let name = formData.get("name") as string;
-                  renameMetric.mutate({ name, metricId: id });
+                  renameEvent.mutate({ name, eventId: id });
                 }}
               >
                 <div className="space-y-2">
@@ -159,12 +159,12 @@ export const MetricCard = ({
                     onClick={() => {
                       setOpenRenamePopover(false);
                     }}
-                    disabled={renameMetric.isLoading}
+                    disabled={renameEvent.isLoading}
                   >
                     Back
                   </Button>
                   <Button type="submit" size="sm">
-                    Add metric
+                    Add event
                   </Button>
                 </div>
               </form>
@@ -178,11 +178,11 @@ export const MetricCard = ({
                 className="space-y-4"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  removeMetric.mutate({ metricId: id });
+                  removeEvent.mutate({ eventId: id });
                 }}
               >
                 <Label htmlFor="back">
-                  Are you sure you want to remove this metric?
+                  Are you sure you want to remove this event?
                 </Label>
                 <div className="flex justify-between">
                   <Button
@@ -193,12 +193,12 @@ export const MetricCard = ({
                     onClick={() => {
                       setOpenRemovePopover(false);
                     }}
-                    disabled={removeMetric.isLoading}
+                    disabled={removeEvent.isLoading}
                   >
                     Back
                   </Button>
                   <Button type="submit" size="sm" variant="destructive">
-                    Remove metric
+                    Remove event
                   </Button>
                 </div>
               </form>
