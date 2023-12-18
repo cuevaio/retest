@@ -2,14 +2,16 @@ import { UAParser } from "ua-parser-js";
 import { headers } from "next/headers";
 
 async function hashIpAddress(ipAddress: string) {
-  let encoder = new TextEncoder();
-  let data = encoder.encode(ipAddress);
+  // let encoder = new TextEncoder();
+  // let data = encoder.encode(ipAddress);
 
-  let hash = await crypto.subtle.digest("sha256", data);
+  // let hash = await crypto.subtle.digest("sha256", data);
 
-  return Array.from(new Uint8Array(hash))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  // return Array.from(new Uint8Array(hash))
+  //   .map((byte) => byte.toString(16).padStart(2, "0"))
+  //   .join("");
+
+  return ipAddress;
 }
 
 export async function getClientDataEdge() {
