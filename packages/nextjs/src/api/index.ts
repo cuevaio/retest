@@ -1,6 +1,3 @@
-"use server";
-import "server-only";
-
 import { NextRequest } from "next/server";
 
 import { getClientData } from "../utils/get-client-data";

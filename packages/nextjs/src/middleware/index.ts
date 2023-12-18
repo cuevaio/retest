@@ -1,6 +1,3 @@
-"use server";
-import "server-only";
-
 import {
   NextFetchEvent,
   NextMiddleware,
