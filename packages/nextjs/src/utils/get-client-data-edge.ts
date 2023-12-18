@@ -1,5 +1,5 @@
 import { UAParser } from "ua-parser-js";
-import { headers } from "next/headers";
+import type { NextRequest } from "next/server";
 
 async function hashIpAddress(ipAddress: string) {
   // let encoder = new TextEncoder();
@@ -14,7 +14,7 @@ async function hashIpAddress(ipAddress: string) {
   return ipAddress;
 }
 
-export async function getClientDataEdge() {
+export async function getClientDataEdge(request: NextRequest) {
   if (process.env.NODE_ENV === "development") {
     return {
       hashedIpAddress: "test_hashedIpAddress",
@@ -24,7 +24,7 @@ export async function getClientDataEdge() {
     };
   }
 
-  const headersList = headers();
+  const headersList = request.headers;
   const ip = headersList.get("x-vercel-forwarded-for") || undefined;
   const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
   const country = headersList.get("x-vercel-ip-country") || undefined;

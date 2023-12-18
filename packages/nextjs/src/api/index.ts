@@ -1,9 +1,10 @@
 import { NextRequest } from "next/server";
 
-import { getRetestAPIUrl } from "../utils/get-retest-api-url";
-import { getVariantServer } from "../get-variant-server";
-import { getVariantsServer } from "../get-variants-server";
 import { getClientDataEdge } from "../utils/get-client-data-edge";
+import { getRetestAPIUrl } from "../utils/get-retest-api-url";
+
+import { getVariantServerEdge } from "../get-variant-server-edge";
+import { getVariantsServerEdge } from "../get-variants-server-edge";
 
 function generateRetestAPI() {
   const retestAPIUrl = getRetestAPIUrl();
@@ -16,7 +17,7 @@ function generateRetestAPI() {
       const { action } = params;
 
       const { hashedIpAddress, country, browser, os } =
-        await getClientDataEdge();
+        await getClientDataEdge(req);
 
       if (!hashedIpAddress || !country || !browser || !os) {
         return Response.json(
@@ -32,7 +33,7 @@ function generateRetestAPI() {
       const searchParams = req.nextUrl.searchParams;
 
       if (action === "getVariants") {
-        let data = getVariantsServer();
+        let data = getVariantsServerEdge(req);
         return Response.json(data);
       } else if (action === "getVariant") {
         const experiment = searchParams.get("experiment") || undefined;
@@ -45,7 +46,7 @@ function generateRetestAPI() {
             { status: 400 },
           );
         }
-        let data = getVariantServer(experiment);
+        let data = getVariantServerEdge(req, experiment);
         return Response.json(data);
       }
 

@@ -57,10 +57,9 @@ export const retestMiddleware =
       }
     });
 
-    if (retestExperiments.size < experiments.length) {
+    if (true) {
       const { os, country, browser, hashedIpAddress } =
-        await getClientDataEdge();
-
+        await getClientDataEdge(request);
       if (!os || !country || !browser || !hashedIpAddress) {
         return response;
       }
