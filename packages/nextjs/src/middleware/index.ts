@@ -58,7 +58,7 @@ export const retestMiddleware =
     });
 
     if (retestExperiments.size < experiments.length) {
-      const { os, country, browser, hashedIpAddress } = getClientData();
+      const { os, country, browser, hashedIpAddress } = await getClientData();
 
       if (!os || !country || !browser || !hashedIpAddress) {
         return response;
