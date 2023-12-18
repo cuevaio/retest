@@ -1,6 +1,9 @@
 import { UAParser } from "ua-parser-js";
 import type { NextRequest } from "next/server";
 
+import { geolocation } from "@vercel/edge";
+import { ipAddress } from "@vercel/edge";
+
 async function hashIpAddress(ipAddress: string) {
   // let encoder = new TextEncoder();
   // let data = encoder.encode(ipAddress);
@@ -26,13 +29,12 @@ export async function getClientDataEdge(request: NextRequest) {
 
   const headersList = request.headers;
 
+  const { country } = geolocation(request);
   console.log(headersList);
 
-  const ip = headersList.get("x-vercel-forwarded-for") || undefined;
-  console.log(ip);
-  const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
+  const ip = ipAddress(request);
 
-  const country = headersList.get("x-vercel-ip-country") || undefined;
+  const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
 
   const userAgent = headersList.get("user-agent") || undefined;
 
@@ -48,7 +50,7 @@ export async function getClientDataEdge(request: NextRequest) {
     browser = result.browser.name;
     os = result.os.name;
   }
-
+  console.log(browser, os);
   return {
     hashedIpAddress,
     country,
