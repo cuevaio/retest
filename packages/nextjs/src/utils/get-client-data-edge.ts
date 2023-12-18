@@ -25,13 +25,21 @@ export async function getClientDataEdge(request: NextRequest) {
   }
 
   const headersList = request.headers;
+
+  console.log(headersList);
+
   const ip = headersList.get("x-vercel-forwarded-for") || undefined;
+  console.log(ip);
   const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
+
   const country = headersList.get("x-vercel-ip-country") || undefined;
+
   const userAgent = headersList.get("user-agent") || undefined;
 
   let browser: string | undefined;
   let os: string | undefined;
+
+  console.log(userAgent);
 
   if (userAgent) {
     const parser = new UAParser(userAgent);
