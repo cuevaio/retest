@@ -1,4 +1,5 @@
 import { type Experiment } from "../types/experiment";
+import { getVariantClient } from "../get-variant-client";
 
 type ExperimentToVariantMap<Experiments extends readonly Experiment[]> = {
   [K in Experiments[number]["name"]]: Extract<
@@ -18,27 +19,14 @@ type ExperimentToEventMap<Experiments extends readonly Experiment[]> = {
     : never;
 };
 
-import { useQuery } from "@tanstack/react-query";
-
-export function generateUseRetestHook<
+export function generateUseRetestClient<
   Experiments extends readonly Experiment[],
 >(experiments: Experiments) {
-  function useRetest<K extends keyof ExperimentToVariantMap<Experiments>>(
+  function useRetestClient<K extends keyof ExperimentToVariantMap<Experiments>>(
     experiment: K,
   ) {
-    let { isLoading, data } = useQuery<{
-      variant: string | undefined;
-      startedAt: string | undefined;
-      endedAt: string | undefined;
-    }>({
-      queryKey: ["getVariant", experiment],
-      queryFn: async () => {
-        let res = await fetch(
-          `/api/retest/getVariant?experiment=${experiment}`,
-        );
-        return res.json();
-      },
-    });
+    let { isLoading, variant, endedAt, startedAt } =
+      getVariantClient(experiment);
 
     function trackEvent(event: ExperimentToEventMap<Experiments>[K]) {
       fetch(`/api/retest/trackEvent?experiment=${experiment}&event=${event}`, {
@@ -48,10 +36,12 @@ export function generateUseRetestHook<
 
     return {
       isLoading,
-      variant: data?.variant as ExperimentToVariantMap<Experiments>[K],
+      variant: variant as ExperimentToVariantMap<Experiments>[K],
+      endedAt,
+      startedAt,
       trackEvent,
     };
   }
 
-  return useRetest;
+  return useRetestClient;
 }

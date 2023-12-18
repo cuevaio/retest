@@ -1,4 +1,4 @@
-import { generateUseRetestHook } from "./useRetestHook";
-import { generateRetestClientComponent } from "./retestClientComponent";
+import { generateUseRetestClient } from "./use-retest-client";
+import { generateRetestBlockClient } from "./retest-block-client";
 
-export { generateUseRetestHook, generateRetestClientComponent };
+export { generateUseRetestClient, generateRetestBlockClient };

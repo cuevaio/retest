@@ -1,5 +1,5 @@
-import { getVariantServer } from "../get-variant-server";
 import { type Experiment } from "../types/experiment";
+import { getVariantClient } from "../get-variant-client";
 
 type ExperimentToVariantMap<Experiments extends readonly Experiment[]> = {
   [K in Experiments[number]["name"]]: Extract<
@@ -8,10 +8,12 @@ type ExperimentToVariantMap<Experiments extends readonly Experiment[]> = {
   >["variants"][number];
 };
 
-export function generateRetestServerComponent<
+export function generateRetestBlockClient<
   Experiments extends readonly Experiment[],
 >(experiments: Experiments) {
-  function RetestServer<K extends keyof ExperimentToVariantMap<Experiments>>({
+  function RetestBlockClient<
+    K extends keyof ExperimentToVariantMap<Experiments>,
+  >({
     experiment,
     variant,
     children,
@@ -20,7 +22,7 @@ export function generateRetestServerComponent<
     variant: ExperimentToVariantMap<Experiments>[K];
     children: React.ReactNode;
   }) {
-    let { variant: variantToShow } = getVariantServer(experiment);
+    let { variant: variantToShow } = getVariantClient(experiment);
 
     if (!variantToShow) {
       return null;
@@ -33,5 +35,5 @@ export function generateRetestServerComponent<
     return children;
   }
 
-  return RetestServer;
+  return RetestBlockClient;
 }

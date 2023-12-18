@@ -1,4 +1,7 @@
-import { generateRetestServerComponent } from "@retestlabs/nextjs/server";
+import {
+  generateUseRetestServer,
+  generateRetestBlockServer,
+} from "@retestlabs/nextjs/server";
 
 export const experiments = [
   {
@@ -16,4 +19,5 @@ export const experiments = [
   },
 ] as const;
 
-export const RetestServer = generateRetestServerComponent(experiments);
+export const RetestBlockServer = generateRetestBlockServer(experiments);
+export const useRetestServer = generateUseRetestServer(experiments);

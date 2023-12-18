@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  generateUseRetestHook,
-  generateRetestClientComponent,
+  generateUseRetestClient,
+  generateRetestBlockClient,
 } from "@retestlabs/nextjs/client";
 
 export const experiments = [
@@ -21,5 +21,5 @@ export const experiments = [
   },
 ] as const;
 
-export const useRetest = generateUseRetestHook(experiments);
-export const RetestClient = generateRetestClientComponent(experiments);
+export const useRetestClient = generateUseRetestClient(experiments);
+export const RetestBlockClient = generateRetestBlockClient(experiments);

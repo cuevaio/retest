@@ -30,7 +30,6 @@ export async function getClientDataEdge(request: NextRequest) {
   const headersList = request.headers;
 
   const { country } = geolocation(request);
-  console.log(headersList);
 
   const ip = ipAddress(request);
 
@@ -41,8 +40,6 @@ export async function getClientDataEdge(request: NextRequest) {
   let browser: string | undefined;
   let os: string | undefined;
 
-  console.log(userAgent);
-
   if (userAgent) {
     const parser = new UAParser(userAgent);
     const result = parser.getResult();
@@ -50,7 +47,6 @@ export async function getClientDataEdge(request: NextRequest) {
     browser = result.browser.name;
     os = result.os.name;
   }
-  console.log(browser, os);
   return {
     hashedIpAddress,
     country,

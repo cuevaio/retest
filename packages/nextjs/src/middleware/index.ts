@@ -5,7 +5,7 @@ import {
   NextResponse,
 } from "next/server";
 
-import { getClientDataEdge } from "../utils/get-client-data-edge";
+import { getClientDataEdge } from "../get-client-data-edge";
 import { getRetestAPIUrl } from "../utils/get-retest-api-url";
 
 import { type Experiment } from "../types/experiment";

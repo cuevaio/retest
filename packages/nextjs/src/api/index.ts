@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-import { getClientDataEdge } from "../utils/get-client-data-edge";
+import { getClientDataEdge } from "../get-client-data-edge";
 import { getRetestAPIUrl } from "../utils/get-retest-api-url";
 
 import { getVariantServerEdge } from "../get-variant-server-edge";
