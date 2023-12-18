@@ -1,14 +1,18 @@
 import { UAParser } from "ua-parser-js";
 import { headers } from "next/headers";
-import crypto from "crypto";
 
-function hashIpAddress(ipAddress: string) {
-  const hash = crypto.createHash("sha256");
-  hash.update(ipAddress);
-  return hash.digest("hex");
+async function hashIpAddress(ipAddress: string) {
+  let encoder = new TextEncoder();
+  let data = encoder.encode(ipAddress);
+
+  let hash = await crypto.subtle.digest("sha256", data);
+
+  return Array.from(new Uint8Array(hash))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-function getClientData() {
+export async function getClientDataEdge() {
   if (process.env.NODE_ENV === "development") {
     return {
       hashedIpAddress: "test_hashedIpAddress",
@@ -20,7 +24,7 @@ function getClientData() {
 
   const headersList = headers();
   const ip = headersList.get("x-vercel-forwarded-for") || undefined;
-  const hashedIpAddress = ip ? hashIpAddress(ip) : undefined;
+  const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
   const country = headersList.get("x-vercel-ip-country") || undefined;
   const userAgent = headersList.get("user-agent") || undefined;
 
@@ -42,5 +46,3 @@ function getClientData() {
     os,
   };
 }
-
-export { getClientData };

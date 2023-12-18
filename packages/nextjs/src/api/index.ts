@@ -14,7 +14,7 @@ function generateRetestAPI() {
   ) => {
     const { action } = params;
 
-    const { hashedIpAddress, country, browser, os } = await getClientData();
+    const { hashedIpAddress, country, browser, os } = getClientData();
 
     if (!hashedIpAddress || !country || !browser || !os) {
       return Response.json(

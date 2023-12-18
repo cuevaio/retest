@@ -5,7 +5,7 @@ import {
   NextResponse,
 } from "next/server";
 
-import { getClientData } from "../utils/get-client-data";
+import { getClientDataEdge } from "../utils/get-client-data-edge";
 import { getRetestAPIUrl } from "../utils/get-retest-api-url";
 
 import { type Experiment } from "../types/experiment";
@@ -58,7 +58,8 @@ export const retestMiddleware =
     });
 
     if (retestExperiments.size < experiments.length) {
-      const { os, country, browser, hashedIpAddress } = await getClientData();
+      const { os, country, browser, hashedIpAddress } =
+        await getClientDataEdge();
 
       if (!os || !country || !browser || !hashedIpAddress) {
         return response;
