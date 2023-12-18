@@ -1,4 +1,3 @@
-import { RetestBlockClient } from "@/lib/retest/client";
 import { RetestBlockServer } from "@/lib/retest/server";
 
 import { Button } from "@retestlabs/ui/button";
@@ -12,15 +11,15 @@ function Page(): JSX.Element {
           experiment="mobile-hamburguer-icon-experiment"
           variant="variantA"
         >
-          <Button>Variant A Server Component</Button>
+          <Button>Variant A</Button>
         </RetestBlockServer>
 
-        <RetestBlockClient
+        <RetestBlockServer
           experiment="mobile-hamburguer-icon-experiment"
-          variant="variantA"
+          variant="variantB"
         >
-          <Button>Variant A Client Component</Button>
-        </RetestBlockClient>
+          <Button>Variant B</Button>
+        </RetestBlockServer>
       </div>
 
       <Button variant="secondary" asChild>

@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@retestlabs/ui/accordion";
+import { WrenchIcon } from "lucide-react";
 
 const Page = () => {
   let getActiveExperiements = trpc.getActiveExperiments.useQuery();
@@ -19,9 +20,17 @@ const Page = () => {
     <div className="space-y-2">
       <div className="flex justify-between">
         <h1 className="font-bold">Experiments</h1>
-        <Button asChild>
-          <Link href="/app/experiments/create">New experiment</Link>
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/app/setup">
+              <WrenchIcon className="mr-2 h-4 w-4" />
+              Setup your project
+            </Link>
+          </Button>
+          <Button asChild size="sm" variant="secondary">
+            <Link href="/app/experiments/create">New experiment</Link>
+          </Button>
+        </div>
       </div>
 
       <Accordion
