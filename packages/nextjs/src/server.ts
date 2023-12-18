@@ -1,11 +1,11 @@
-import { generateRetestClient } from "./retestClient";
 import { generateRetestAPI } from "./api";
 import { RetestProvider } from "./provider";
 import { retestMiddleware } from "./middleware";
+import { generateRetestServerComponent } from "./retestServerComponent";
 
 export {
-  generateRetestClient,
   generateRetestAPI,
   RetestProvider,
   retestMiddleware,
+  generateRetestServerComponent,
 };

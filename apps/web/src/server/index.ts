@@ -14,6 +14,7 @@ export const appRouter = router({
       { id: "2", text: "Buy eggs", done: false },
     ];
   }),
+
   createExperiment: publicProcedure
     .input(
       z
@@ -40,6 +41,63 @@ export const appRouter = router({
       let experiment = await xata.db.experiments.create(input);
       return experiment;
     }),
+  getActiveExperiments: publicProcedure.query(async () => {
+    let experiments = await xata.db.experiments
+      .filter({
+        endedAt: {
+          $ge: new Date(),
+        },
+      })
+      .sort("startedAt", "asc")
+      .getAll();
+
+    return experiments;
+  }),
+
+  getInactiveExperiments: publicProcedure.query(async () => {
+    let experiments = await xata.db.experiments
+      .filter({
+        endedAt: {
+          $lt: new Date(),
+        },
+      })
+      .sort("endedAt", "desc")
+      .getAll();
+
+    return experiments;
+  }),
+
+  getActiveExperimentsWithVariants: publicProcedure.query(async () => {
+    let experiments = await xata.db.experiments
+      .select([
+        "*",
+        {
+          name: "<-variants.experiment",
+          as: "variants",
+          sort: [{ name: "asc" }],
+          columns: ["name"],
+        },
+        {
+          name: "<-events.experiment",
+          as: "events",
+          sort: [{ name: "asc" }],
+          columns: ["name"],
+        },
+      ])
+      .filter({
+        endedAt: {
+          $ge: new Date(),
+        },
+        variantCount: {
+          $ge: 1,
+        },
+      })
+      .sort("startedAt", "asc")
+      .getAll();
+
+    return experiments;
+  }),
+
   deleteExperiment: publicProcedure
     .input(z.object({ experimentId: z.string() }))
     .mutation(async (opts) => {

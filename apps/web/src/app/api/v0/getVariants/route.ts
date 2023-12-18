@@ -25,9 +25,18 @@ export const GET = async (req: NextRequest) => {
   let experiments = await xata.db.experiments
     .select(["id"])
     .filter({
-      endedAt: {
-        $ge: new Date(),
-      },
+      $all: [
+        {
+          endedAt: {
+            $ge: new Date(),
+          },
+        },
+        {
+          variantCount: {
+            $ge: 1,
+          },
+        },
+      ],
     })
     .getAll();
 
@@ -117,8 +126,8 @@ export const GET = async (req: NextRequest) => {
       subject_variants.map((sv) => ({
         variant: sv.variant?.name,
         experiment: sv.variant?.experiment?.name,
-        started_at: sv.variant?.experiment?.startedAt,
-        ended_at: sv.variant?.experiment?.endedAt,
+        startedAt: sv.variant?.experiment?.startedAt,
+        endedAt: sv.variant?.experiment?.endedAt,
       })),
       {
         status: 200,
@@ -169,16 +178,16 @@ export const GET = async (req: NextRequest) => {
     let experimentVariantRels = subject_variants.map((sv) => ({
       variant: sv.variant?.name,
       experiment: sv.variant?.experiment?.name,
-      started_at: sv.variant?.experiment?.startedAt,
-      ended_at: sv.variant?.experiment?.endedAt,
+      startedAt: sv.variant?.experiment?.startedAt,
+      endedAt: sv.variant?.experiment?.endedAt,
     }));
 
     variantsToAssign.forEach((v) => {
       experimentVariantRels.push({
         variant: v?.name,
         experiment: v?.experiment?.name,
-        started_at: v?.experiment?.startedAt,
-        ended_at: v?.experiment?.endedAt,
+        startedAt: v?.experiment?.startedAt,
+        endedAt: v?.experiment?.endedAt,
       });
     });
 

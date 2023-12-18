@@ -19,16 +19,33 @@ import { Input } from "@retestlabs/ui/input";
 import { trpc } from "@/lib/trpc";
 import { useToast } from "@retestlabs/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
 export const DeleteForm = ({ name, id }: { id: string; name: string }) => {
   let [openDialog, setOpenDialog] = React.useState(false);
   const { toast } = useToast();
+  let queryClient = useQueryClient();
+
+  let getActiveExperiments = getQueryKey(
+    trpc.getActiveExperiments,
+    undefined,
+    "query",
+  );
+  let getInactiveExperiments = getQueryKey(
+    trpc.getInactiveExperiments,
+    undefined,
+    "query",
+  );
+
   let deleteExperiment = trpc.deleteExperiment.useMutation({
     onSuccess: (data) => {
       setOpenDialog(false);
       toast({
         title: "Experiment deleted",
       });
+      queryClient.invalidateQueries(getActiveExperiments);
+      queryClient.invalidateQueries(getInactiveExperiments);
       router.push("/app/experiments");
     },
     onError: (error) => {

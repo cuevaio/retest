@@ -1,42 +1,30 @@
-"use client";
-
-import { Experiment, Variant, useRetest } from "@/lib/retest";
+import { RetestClient } from "@/lib/retest/client";
+import { RetestServer } from "@/lib/retest/server";
 import { Button } from "@retestlabs/ui/button";
-
+import Link from "next/link";
 function Page(): JSX.Element {
-  let { variant, trackEvent } = useRetest("mobile-hamburguer-icon-experiment");
-
-  let message = "Hello";
-  switch (variant) {
-    case "variantA":
-      message = "Hello from variant A";
-      break;
-    case "variantB":
-      message = "Hello from variant B";
-      break;
-  }
-
   return (
     <main className="mx-auto w-max text-center space-y-4 my-4">
       <h1 className="font-bold text-lg">Test en docs</h1>
-      <Button
-        onClick={() => {
-          trackEvent("eventA");
-        }}
-      >
-        {message}
-      </Button>
+      <div className="flex space-x-8">
+        <RetestServer
+          experiment="mobile-hamburguer-icon-experiment"
+          variant="variantA"
+        >
+          <Button>Variant A Server Component</Button>
+        </RetestServer>
 
-      <div className="bg-green p-16">
-        <Experiment name="mobile-hamburguer-icon-experiment">
-          <Variant name="variantA">
-            <div>Variant A</div>
-          </Variant>
-          <Variant name="variantB">
-            <div>Variant B</div>
-          </Variant>
-        </Experiment>
+        <RetestClient
+          experiment="mobile-hamburguer-icon-experiment"
+          variant="variantA"
+        >
+          <Button>Variant A Client Component</Button>
+        </RetestClient>
       </div>
+
+      <Button variant="secondary" asChild>
+        <Link href="/client-page">Go to Client Page</Link>
+      </Button>
     </main>
   );
 }

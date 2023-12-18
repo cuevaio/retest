@@ -1,7 +1,10 @@
 {
   "name": "@retestlabs/nextjs",
   "version": "0.0.1",
-  "exports": "./src/index.ts",
+  "exports": {
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts"
+  },
   "scripts": {
     "lint": "eslint . --max-warnings 0"
   },
@@ -9,7 +12,9 @@
     "@retestlabs/utils": "workspace:*",
     "@tanstack/react-query": "^4.18.0",
     "@tanstack/react-query-devtools": "^5.14.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/ua-parser-js": "^0.7.39",
+    "js-cookie": "^3.0.5",
     "next": "^14.0.4",
     "react": "^18.2.0",
     "swr": "^2.2.4",

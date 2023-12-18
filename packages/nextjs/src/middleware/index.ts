@@ -22,35 +22,85 @@ export const retestMiddleware =
     const retestAPIUrl = getRetestAPIUrl();
     let response = (await middleware(request, event)) as NextResponse;
 
-    const allCookies = request.cookies.getAll();
-    console.log("allCookies", allCookies);
+    const retestCookies = request.cookies.getAll().filter((cookie) => {
+      return cookie.name.startsWith("rt-");
+    });
 
-    console.log(experiments);
+    let retestExperiments = new Map<
+      number,
+      {
+        experiment: string;
+        variant: string;
+        startedAt: string;
+        endedAt: string;
+      }
+    >();
 
-    const { os, country, browser, hashedIpAddress } = getClientData();
+    retestCookies.forEach((cookie) => {
+      const [_, idx, type] = cookie.name.split("-");
+      const value = cookie.value;
+      const index = Number(idx);
+      if (!retestExperiments.has(Number(index))) {
+        retestExperiments.set(Number(index), {
+          experiment: "",
+          variant: "",
+          startedAt: "",
+          endedAt: "",
+        });
+      }
 
-    if (!os || !country || !browser || !hashedIpAddress) {
-      return response;
+      if (type === "exp") {
+        retestExperiments.get(index)!.experiment = value;
+      } else if (type === "var") {
+        retestExperiments.get(index)!.variant = value;
+      } else if (type === "sta") {
+        retestExperiments.get(index)!.startedAt = value;
+      } else if (type === "end") {
+        retestExperiments.get(index)!.endedAt = value;
+      }
+    });
+
+    if (retestExperiments.size < experiments.length) {
+      const { os, country, browser, hashedIpAddress } = getClientData();
+
+      if (!os || !country || !browser || !hashedIpAddress) {
+        return response;
+      }
+
+      let res = await fetch(
+        retestAPIUrl +
+          "/api/v0/getVariants?" +
+          new URLSearchParams({
+            hashedIpAddress,
+            country,
+            browser,
+            os,
+          }),
+      );
+
+      let data = (await res.json()) as {
+        experiment: string;
+        variant: string;
+        startedAt: string;
+        endedAt: string;
+      }[];
+
+      retestCookies.forEach((cookie) => {
+        request.cookies.delete(cookie.name);
+        response.cookies.delete(cookie.name);
+      });
+
+      data.forEach((d, index) => {
+        request.cookies.set("rt-" + index + "-exp", d.experiment);
+        request.cookies.set("rt-" + index + "-var", d.variant);
+        request.cookies.set("rt-" + index + "-sta", d.startedAt);
+        request.cookies.set("rt-" + index + "-end", d.endedAt);
+
+        response.cookies.set("rt-" + index + "-exp", d.experiment);
+        response.cookies.set("rt-" + index + "-var", d.variant);
+        response.cookies.set("rt-" + index + "-sta", d.startedAt);
+        response.cookies.set("rt-" + index + "-end", d.endedAt);
+      });
     }
-
-    let res = await fetch(
-      retestAPIUrl +
-        "/api/v0/getVariants?" +
-        new URLSearchParams({
-          hashedIpAddress,
-          country,
-          browser,
-          os,
-        }),
-    );
-
-    let data = await res.json();
-
-    console.log("data", data);
-
-    if (true) {
-      response.cookies.set("retest", "true");
-    }
-
     return response;
   };
