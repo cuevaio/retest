@@ -23,7 +23,6 @@ export async function getClientDataEdge(request: NextRequest) {
       country: "test_country",
       browser: "test_browser",
       os: "test_os",
-      deviceType: "test_deviceType",
       isBot: false,
     };
   }
@@ -34,13 +33,12 @@ export async function getClientDataEdge(request: NextRequest) {
 
   const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
 
-  const { browser, os, device, isBot } = userAgent(request);
+  const { browser, os, isBot } = userAgent(request);
   return {
     isBot,
     hashedIpAddress,
     country,
     browser: browser.name,
     os: os.name,
-    deviceType: device.type,
   };
 }

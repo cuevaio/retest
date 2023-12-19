@@ -16,10 +16,10 @@ function generateRetestAPI() {
     try {
       const { action } = params;
 
-      const { hashedIpAddress, country, browser, os, deviceType } =
+      const { hashedIpAddress, country, browser, os } =
         await getClientDataEdge(req);
 
-      if (!hashedIpAddress || !country || !browser || !os || !deviceType) {
+      if (!hashedIpAddress || !country || !browser || !os) {
         return Response.json(
           {
             error: "Missing device data",
@@ -54,7 +54,6 @@ function generateRetestAPI() {
           country,
           browser,
           os,
-          deviceType,
         });
       } else {
         return Response.json(
