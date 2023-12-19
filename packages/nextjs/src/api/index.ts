@@ -16,10 +16,10 @@ function generateRetestAPI() {
     try {
       const { action } = params;
 
-      const { hashedIpAddress, country, browser, os } =
+      const { hashedIpAddress, country, browser, os, deviceType } =
         await getClientDataEdge(req);
 
-      if (!hashedIpAddress || !country || !browser || !os) {
+      if (!hashedIpAddress || !country || !browser || !os || !deviceType) {
         return Response.json(
           {
             error: "Missing device data",
@@ -48,15 +48,24 @@ function generateRetestAPI() {
         }
         let data = getVariantServerEdge(req, experiment);
         return Response.json(data);
+      } else if (action === "getClientData") {
+        return Response.json({
+          hashedIpAddress,
+          country,
+          browser,
+          os,
+          deviceType,
+        });
+      } else {
+        return Response.json(
+          {
+            error: "Invalid action",
+          },
+          {
+            status: 400,
+          },
+        );
       }
-
-      return Response.json({
-        action,
-        hashedIpAddress,
-        country,
-        browser,
-        os,
-      });
     } catch (error) {
       return Response.json(
         {

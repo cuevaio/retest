@@ -135,16 +135,20 @@ export const retestMiddleware =
         deviceType,
       });
 
+      console.log(searchParams);
+
       let res = await fetch(
         retestAPIUrl + "/api/v0/getVariants?" + searchParams.toString(),
       );
-
+      
       let data = (await res.json()) as {
         experiment: string;
         variant: string;
         startedAt: string;
         endedAt: string;
       }[];
+
+      console.log(data);
 
       // delete the old retest cookies
       retestCookies.forEach((cookie) => {
