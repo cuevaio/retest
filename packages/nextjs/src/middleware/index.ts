@@ -112,23 +112,31 @@ export const retestMiddleware =
     // if the experiments are not the same,
     // we need to get the experiments and variants assigned to the user from the retest API (https://retest.dev)
     // and set the cookies
+
     if (!isSame) {
-      const { os, country, browser, hashedIpAddress } =
+      const { os, country, browser, hashedIpAddress, deviceType, isBot } =
         await getClientDataEdge(request);
-      if (!os || !country || !browser || !hashedIpAddress) {
+
+      if (isBot) {
+        return response;
+      }
+
+      if (!hashedIpAddress || !country || !os || !browser || !deviceType) {
         return response;
       }
 
       const retestAPIUrl = getRetestAPIUrl();
+
+      let searchParams = new URLSearchParams({
+        hashedIpAddress,
+        country,
+        os,
+        browser,
+        deviceType,
+      });
+
       let res = await fetch(
-        retestAPIUrl +
-          "/api/v0/getVariants?" +
-          new URLSearchParams({
-            hashedIpAddress,
-            country,
-            browser,
-            os,
-          }),
+        retestAPIUrl + "/api/v0/getVariants?" + searchParams.toString(),
       );
 
       let data = (await res.json()) as {

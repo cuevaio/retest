@@ -1,5 +1,4 @@
-import { UAParser } from "ua-parser-js";
-import type { NextRequest } from "next/server";
+import { NextRequest, userAgent } from "next/server";
 
 import { geolocation } from "@vercel/edge";
 import { ipAddress } from "@vercel/edge";
@@ -20,14 +19,14 @@ async function hashIpAddress(ipAddress: string) {
 export async function getClientDataEdge(request: NextRequest) {
   if (process.env.NODE_ENV === "development") {
     return {
-      hashedIpAddress: "test_hashedIpAddress",
+      hashedIpAddress: "test_" + process.env.RT_DEV_IP_ADDRESS ?? "0.0.0.0",
       country: "test_country",
       browser: "test_browser",
       os: "test_os",
+      deviceType: "test_deviceType",
+      isBot: false,
     };
   }
-
-  const headersList = request.headers;
 
   const { country } = geolocation(request);
 
@@ -35,22 +34,13 @@ export async function getClientDataEdge(request: NextRequest) {
 
   const hashedIpAddress = ip ? await hashIpAddress(ip) : undefined;
 
-  const userAgent = headersList.get("user-agent") || undefined;
-
-  let browser: string | undefined;
-  let os: string | undefined;
-
-  if (userAgent) {
-    const parser = new UAParser(userAgent);
-    const result = parser.getResult();
-
-    browser = result.browser.name;
-    os = result.os.name;
-  }
+  const { browser, os, device, isBot } = userAgent(request);
   return {
+    isBot,
     hashedIpAddress,
     country,
-    browser,
-    os,
+    browser: browser.name,
+    os: os.name,
+    deviceType: device.type,
   };
 }

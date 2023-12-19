@@ -12,11 +12,12 @@ export const GET = async (req: NextRequest) => {
   const c = searchParams.get("country") || undefined;
   const b = searchParams.get("browser") || undefined;
   const os = searchParams.get("os") || undefined;
+  const dt = searchParams.get("deviceType") || undefined;
 
-  if (!hashedIpAddress || !c || !os || !b) {
+  if (!hashedIpAddress || !c || !b || !os || !dt) {
     return Response.json(
       {
-        error: "Missing device data",
+        error: "Missing hashed ip address, country or device data",
       },
       { status: 400 },
     );
@@ -51,10 +52,11 @@ export const GET = async (req: NextRequest) => {
     );
   }
 
-  let [country, browser, operatingSystem] = await Promise.all([
+  let [country, browser, operatingSystem, deviceType] = await Promise.all([
     xata.db.countries.filter({ name: c }).getFirst(),
     xata.db.browsers.filter({ name: b }).getFirst(),
     xata.db.operating_systems.filter({ name: os }).getFirst(),
+    xata.db.device_types.filter({ name: dt }).getFirst(),
   ]);
 
   if (!country) {
@@ -69,36 +71,38 @@ export const GET = async (req: NextRequest) => {
     operatingSystem = await xata.db.operating_systems.create({ name: os });
   }
 
+  if (!deviceType) {
+    deviceType = await xata.db.device_types.create({ name: dt });
+  }
+
   let subject = await xata.db.subjects
     .filter({
       hashedIpAddress,
     })
     .getFirst();
-  let new_subject = false;
 
   if (!subject) {
     subject = await xata.db.subjects.create({
       hashedIpAddress,
       country,
     });
-    new_subject = true;
   }
 
-  let device =
-    !new_subject &&
-    (await xata.db.devices
-      .filter({
-        subject: subject.id,
-        operatingSystem: operatingSystem.id,
-        browser: browser.id,
-      })
-      .getFirst());
+  let device = await xata.db.devices
+    .filter({
+      subject: subject.id,
+      operatingSystem: operatingSystem.id,
+      browser: browser.id,
+      type: deviceType.id,
+    })
+    .getFirst();
 
   if (!device) {
     device = await xata.db.devices.create({
       subject: subject.id,
       operatingSystem: operatingSystem.id,
       browser: browser.id,
+      type: deviceType.id,
     });
   }
 
