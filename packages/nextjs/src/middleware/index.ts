@@ -114,14 +114,14 @@ export const retestMiddleware =
     // and set the cookies
 
     if (!isSame) {
-      const { os, country, browser, hashedIpAddress, deviceType, isBot } =
+      const { os, country, browser, hashedIpAddress, isBot } =
         await getClientDataEdge(request);
 
       if (isBot) {
         return response;
       }
 
-      if (!hashedIpAddress || !country || !os || !browser || !deviceType) {
+      if (!hashedIpAddress || !country || !os || !browser) {
         return response;
       }
 
@@ -132,7 +132,6 @@ export const retestMiddleware =
         country,
         os,
         browser,
-        deviceType,
       });
 
       console.log(searchParams);
@@ -140,7 +139,7 @@ export const retestMiddleware =
       let res = await fetch(
         retestAPIUrl + "/api/v0/getVariants?" + searchParams.toString(),
       );
-      
+
       let data = (await res.json()) as {
         experiment: string;
         variant: string;

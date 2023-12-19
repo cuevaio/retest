@@ -14,9 +14,8 @@ export const GET = async (req: NextRequest) => {
   const c = searchParams.get("country") || undefined;
   const b = searchParams.get("browser") || undefined;
   const os = searchParams.get("os") || undefined;
-  const dt = searchParams.get("deviceType") || undefined;
 
-  if (!hashedIpAddress || !c || !b || !os || !dt) {
+  if (!hashedIpAddress || !c || !b || !os) {
     return Response.json(
       {
         error: "Missing hashed ip address, country or device data",
@@ -54,11 +53,10 @@ export const GET = async (req: NextRequest) => {
     );
   }
 
-  let [country, browser, operatingSystem, deviceType] = await Promise.all([
+  let [country, browser, operatingSystem] = await Promise.all([
     xata.db.countries.filter({ name: c }).getFirst(),
     xata.db.browsers.filter({ name: b }).getFirst(),
     xata.db.operating_systems.filter({ name: os }).getFirst(),
-    xata.db.device_types.filter({ name: dt }).getFirst(),
   ]);
 
   if (!country) {
@@ -71,10 +69,6 @@ export const GET = async (req: NextRequest) => {
 
   if (!operatingSystem) {
     operatingSystem = await xata.db.operating_systems.create({ name: os });
-  }
-
-  if (!deviceType) {
-    deviceType = await xata.db.device_types.create({ name: dt });
   }
 
   let subject = await xata.db.subjects
@@ -95,7 +89,6 @@ export const GET = async (req: NextRequest) => {
       "subject.id": subject.id,
       "operatingSystem.id": operatingSystem.id,
       "browser.id": browser.id,
-      "type.id": deviceType.id,
     })
     .getFirst();
 
@@ -104,7 +97,6 @@ export const GET = async (req: NextRequest) => {
       subject: subject.id,
       operatingSystem: operatingSystem.id,
       browser: browser.id,
-      type: deviceType.id,
     });
   }
 

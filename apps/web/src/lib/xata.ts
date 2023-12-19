@@ -120,7 +120,6 @@ const tables = [
         type: "link",
         link: { table: "operating_systems" },
       },
-      { name: "type", type: "link", link: { table: "device_types" } },
     ],
     revLinks: [{ column: "device", table: "logs" }],
   },
@@ -130,11 +129,6 @@ const tables = [
       { name: "subject", type: "link", link: { table: "subjects" } },
       { name: "variant", type: "link", link: { table: "variants" } },
     ],
-  },
-  {
-    name: "device_types",
-    columns: [{ name: "name", type: "string", unique: true }],
-    revLinks: [{ column: "type", table: "devices" }],
   },
 ] as const;
 
@@ -178,9 +172,6 @@ export type SubjectVariantRelations =
 export type SubjectVariantRelationsRecord = SubjectVariantRelations &
   XataRecord;
 
-export type DeviceTypes = InferredTypes["device_types"];
-export type DeviceTypesRecord = DeviceTypes & XataRecord;
-
 export type DatabaseSchema = {
   experiments: ExperimentsRecord;
   variants: VariantsRecord;
@@ -193,7 +184,6 @@ export type DatabaseSchema = {
   operating_systems: OperatingSystemsRecord;
   devices: DevicesRecord;
   subject_variant_relations: SubjectVariantRelationsRecord;
-  device_types: DeviceTypesRecord;
 };
 
 const DatabaseClient = buildClient();
