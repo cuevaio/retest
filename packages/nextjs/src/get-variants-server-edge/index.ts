@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { ExperimentVariant } from "../types/experiment";
 
 export function getVariantsServerEdge(request: NextRequest) {
   const cookieStore = request.cookies;
@@ -7,15 +8,7 @@ export function getVariantsServerEdge(request: NextRequest) {
     return cookie.name.startsWith("rt-");
   });
 
-  let retestExperiments = new Map<
-    number,
-    {
-      experiment: string;
-      variant: string;
-      startedAt: string;
-      endedAt: string;
-    }
-  >();
+  let retestExperiments = new Map<number, ExperimentVariant>();
 
   retestCookies.forEach((cookie) => {
     const [_, idx, type] = cookie.name.split("-");

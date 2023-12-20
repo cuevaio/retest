@@ -4,31 +4,24 @@ import { RetestBlockClient, useRetestClient } from "@/lib/retest/client";
 import { Button } from "@retestlabs/ui/button";
 
 const ClientPage = () => {
-  let { variant, trackEvent, isLoading } = useRetestClient(
+  let { data, isLoading, error } = useRetestClient(
     "mobile-hamburguer-icon-experiment",
   );
 
   return (
-    <main className="mx-auto w-max text-center space-y-4 my-4">
-      <h1>Client rendered page</h1>
-      <p className="font-bold text-lg">
-        Variant: {isLoading ? "loading..." : variant || "no variant assigned"}
-      </p>
+    <div>
+      <h1>
+        {isLoading
+          ? "LOADING..."
+          : error
+            ? "ERROR!"
+            : data
+              ? data.variant + data.experiment.status
+              : "empty data"}
+      </h1>
 
-      <RetestBlockClient
-        experiment="mobile-hamburguer-icon-experiment"
-        variant="variantA"
-      >
-        <Button>variantA</Button>
-      </RetestBlockClient>
-
-      <RetestBlockClient
-        experiment="mobile-hamburguer-icon-experiment"
-        variant="variantB"
-      >
-        <Button>variantB</Button>
-      </RetestBlockClient>
-    </main>
+      <p>exp ends on: {data?.experiment.endedAt.toLocaleString() || "..."}</p>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { ExperimentVariant } from "../types/experiment";
 
 export function getVariantsServer() {
   const cookieStore = cookies();
@@ -7,22 +8,14 @@ export function getVariantsServer() {
     return cookie.name.startsWith("rt-");
   });
 
-  let retestExperiments = new Map<
-    number,
-    {
-      experiment: string;
-      variant: string;
-      startedAt: string;
-      endedAt: string;
-    }
-  >();
+  let _experiments = new Map<string, ExperimentVariant>();
 
   retestCookies.forEach((cookie) => {
-    const [_, idx, type] = cookie.name.split("-");
     const value = cookie.value;
-    const index = Number(idx);
-    if (!retestExperiments.has(Number(index))) {
-      retestExperiments.set(Number(index), {
+    const [_, index, type] = cookie.name.split("-");
+    if (!index || !type) return;
+    if (!_experiments.has(index)) {
+      _experiments.set(index, {
         experiment: "",
         variant: "",
         startedAt: "",
@@ -31,17 +24,23 @@ export function getVariantsServer() {
     }
 
     if (type === "exp") {
-      retestExperiments.get(index)!.experiment = value;
+      _experiments.get(index)!.experiment = value;
     } else if (type === "var") {
-      retestExperiments.get(index)!.variant = value;
+      _experiments.get(index)!.variant = value;
     } else if (type === "sta") {
-      retestExperiments.get(index)!.startedAt = value;
+      _experiments.get(index)!.startedAt = value;
     } else if (type === "end") {
-      retestExperiments.get(index)!.endedAt = value;
+      _experiments.get(index)!.endedAt = value;
     }
   });
 
-  let experiments = Array.from(retestExperiments.values());
+  let experiments = Array.from(_experiments.values()).filter(
+    (experiment) =>
+      experiment.experiment !== "" &&
+      experiment.variant !== "" &&
+      experiment.startedAt !== "" &&
+      experiment.endedAt !== "",
+  );
 
   return experiments;
 }
