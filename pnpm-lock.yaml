@@ -233,6 +233,9 @@ importers:
       '@vercel/edge':
         specifier: ^1.1.1
         version: 1.1.1
+      jotai:
+        specifier: ^2.6.0
+        version: 2.6.0(@types/react@18.2.45)(react@18.2.0)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -255,6 +258,9 @@ importers:
       '@retestlabs/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@swc-jotai/react-refresh':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@tanstack/eslint-plugin-query':
         specifier: ^5.12.1
         version: 5.12.1(eslint@8.56.0)(typescript@5.3.3)
@@ -1742,6 +1748,10 @@ packages:
 
   /@rushstack/eslint-patch@1.6.1:
     resolution: {integrity: sha512-UY+FGM/2jjMkzQLn8pxcHGMaVLh9aEitG3zY2CiY7XHdLiz3bZOwa6oDxNqEMv7zZkV+cj5DOdz0cQ1BP5Hjgw==}
+    dev: true
+
+  /@swc-jotai/react-refresh@0.1.0:
+    resolution: {integrity: sha512-CWV4W06GdfQo3cW3CoUM2fp7avH4Z/suR7SvECNJnQbr6Sa9U3p7o10nXjNv2zT6z09bbNUPM55HBw5Nwd24Iw==}
     dev: true
 
   /@swc/helpers@0.5.2:
@@ -3992,6 +4002,22 @@ packages:
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
+
+  /jotai@2.6.0(@types/react@18.2.45)(react@18.2.0):
+    resolution: {integrity: sha512-Vt6hsc04Km4j03l+Ax+Sc+FVft5cRJhqgxt6GTz6GM2eM3DyX3CdBdzcG0z2FrlZToL1/0OAkqDghIyARWnSuQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.45
+      react: 18.2.0
+    dev: false
 
   /js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}

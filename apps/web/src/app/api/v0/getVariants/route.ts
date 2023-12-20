@@ -8,8 +8,6 @@ export const GET = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
   // const api_key = searchParams.get("api_key") || undefined;
 
-  console.log(searchParams);
-
   const hashedIpAddress = searchParams.get("hashedIpAddress") || undefined;
   const c = searchParams.get("country") || undefined;
   const b = searchParams.get("browser") || undefined;
@@ -188,8 +186,6 @@ export const GET = async (req: NextRequest) => {
         endedAt: v?.experiment?.endedAt,
       });
     });
-
-    console.log(experimentVariantRels);
 
     return Response.json(experimentVariantRels, {
       status: 200,

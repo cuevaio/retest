@@ -8,7 +8,7 @@ import {
 import { getClientDataEdge } from "../get-client-data-edge";
 import { getRetestAPIUrl } from "../utils/get-retest-api-url";
 
-import { type Experiment } from "../types/experiment";
+import { type ExperimentVariant, type Experiment } from "../types/experiment";
 
 /**
  * `retestMiddleware` is a middleware utility that handles the retest cookies management.
@@ -35,15 +35,7 @@ export const retestMiddleware =
       return cookie.name.startsWith("rt-");
     });
 
-    let experimentsOnCookiesMap = new Map<
-      number,
-      {
-        experiment: string;
-        variant: string;
-        startedAt: string;
-        endedAt: string;
-      }
-    >();
+    let experimentsOnCookiesMap = new Map<number, ExperimentVariant>();
 
     // example of retest cookies
     // rt-0-exp: experiment0
@@ -134,20 +126,11 @@ export const retestMiddleware =
         browser,
       });
 
-      console.log(searchParams);
-
       let res = await fetch(
         retestAPIUrl + "/api/v0/getVariants?" + searchParams.toString(),
       );
 
-      let data = (await res.json()) as {
-        experiment: string;
-        variant: string;
-        startedAt: string;
-        endedAt: string;
-      }[];
-
-      console.log(data);
+      let data = (await res.json()) as ExperimentVariant[];
 
       // delete the old retest cookies
       retestCookies.forEach((cookie) => {
