@@ -16,11 +16,11 @@ const ClientPage = () => {
           : error
             ? "ERROR!"
             : data
-              ? data.variant + data.experiment.status
+              ? data.variant + data.status
               : "empty data"}
       </h1>
 
-      <p>exp ends on: {data?.experiment.endedAt.toLocaleString() || "..."}</p>
+      <p>exp ends on: {data?.endedAt.toLocaleString() || "..."}</p>
     </div>
   );
 };

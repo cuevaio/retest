@@ -44,28 +44,32 @@ export function generateUseRetestClient<
     }
 
     let exp = data?.find((e) => e.experiment === experiment);
-    if (!exp) throw new Error("Experiment not found");
-
-    let now = new Date();
-    let status: "not-started" | "running" | "ended" = "not-started";
-
-    let startedAt = new Date(exp.startedAt);
-    let endedAt = new Date(exp.endedAt);
-
-    if (startedAt < now && now < endedAt) {
-      status = "running";
-    } else if (now > endedAt) {
-      status = "ended";
+    if (!exp) {
+      throw new Error(
+        `Experiment ${experiment} not found. It's probably over.`,
+      );
     }
+
+    if (exp.status === "scheduled") {
+      return {
+        data: {
+          variant: undefined,
+          status: exp.status,
+          startedAt: exp.startedAt,
+          endedAt: exp.endedAt,
+        },
+        error,
+        isLoading,
+        trackEvent,
+      };
+    }
+
     return {
       data: {
         variant: exp.variant as ExperimentToVariantMap<Experiments>[K],
-        experiment: {
-          name: exp.experiment as K,
-          status,
-          startedAt,
-          endedAt,
-        },
+        status: exp.status,
+        startedAt: exp.startedAt,
+        endedAt: exp.endedAt,
       },
       error,
       isLoading,

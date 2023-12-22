@@ -10,7 +10,15 @@ export type Prettify<T> = {
 
 export type ExperimentVariant = {
   experiment: string;
-  variant: string;
   startedAt: string;
   endedAt: string;
-};
+} & (
+  | {
+      variant: string;
+      status: "running" | "completed";
+    }
+  | {
+      variant: undefined;
+      status: "scheduled";
+    }
+);

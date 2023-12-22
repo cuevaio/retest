@@ -65,7 +65,7 @@ export function generateRetestBlockClient<
     if (isLoading) return components["isLoading"] || null;
     if (error) return null;
 
-    if (data?.experiment.status === "ended") {
+    if (data?.status === "completed") {
       return components["hasEnded"] || null;
     }
 

@@ -1,40 +1,17 @@
 import type { NextRequest } from "next/server";
-import { ExperimentVariant } from "../types/experiment";
+import { getExperimentsFromRetestCookies } from "../get-experiments-from-retest-cookies";
 
 export function getVariantsServerEdge(request: NextRequest) {
   const cookieStore = request.cookies;
 
-  const retestCookies = cookieStore.getAll().filter((cookie) => {
-    return cookie.name.startsWith("rt-");
-  });
+  const retestCookies = cookieStore
+    .getAll()
+    .filter((cookie) => {
+      return cookie.name.startsWith("rt-");
+    })
+    .map((cookie) => [cookie.name, cookie.value] as [string, string]);
 
-  let retestExperiments = new Map<number, ExperimentVariant>();
-
-  retestCookies.forEach((cookie) => {
-    const [_, idx, type] = cookie.name.split("-");
-    const value = cookie.value;
-    const index = Number(idx);
-    if (!retestExperiments.has(Number(index))) {
-      retestExperiments.set(Number(index), {
-        experiment: "",
-        variant: "",
-        startedAt: "",
-        endedAt: "",
-      });
-    }
-
-    if (type === "exp") {
-      retestExperiments.get(index)!.experiment = value;
-    } else if (type === "var") {
-      retestExperiments.get(index)!.variant = value;
-    } else if (type === "sta") {
-      retestExperiments.get(index)!.startedAt = value;
-    } else if (type === "end") {
-      retestExperiments.get(index)!.endedAt = value;
-    }
-  });
-
-  let experiments = Array.from(retestExperiments.values());
+  const experiments = getExperimentsFromRetestCookies(retestCookies);
 
   return experiments;
 }
