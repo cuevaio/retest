@@ -2,7 +2,6 @@
 
 import { Input } from "@retestlabs/ui/input";
 import { Label } from "@retestlabs/ui/label";
-import { Textarea } from "@retestlabs/ui/textarea";
 import { Button } from "@retestlabs/ui/button";
 
 import { InputHint } from "@/components/input-hint";
@@ -11,12 +10,13 @@ import { SampleSizeInput } from "./sample-size-input";
 import { DurationInput } from "./duration-input";
 import { trpc } from "@/lib/trpc";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@retestlabs/ui/use-toast";
 import Link from "next/link";
 
 const Page = () => {
   let router = useRouter();
+  const params = useParams<{ workspace: string }>();
   const { toast } = useToast();
   const createExperiment = trpc.createExperiment.useMutation({
     onSuccess: (data) => {
@@ -24,7 +24,7 @@ const Page = () => {
         title: "Experiment created",
         description: "ID: " + data.id,
       });
-      router.push(`/app/experiments`);
+      router.push(`/app/${params.workspace}/experiments`);
     },
   });
 
@@ -55,6 +55,7 @@ const Page = () => {
             endedAt,
             sampleSizeAbsolute,
             sampleSizeRelative,
+            workspaceHandle: params.workspace,
           });
         }}
       >

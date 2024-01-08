@@ -1,14 +1,25 @@
+import { auth } from "@/auth";
+import { Header } from "@/components/header";
+import { SignIn } from "@/components/auth-buttons";
+
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout = ({ children }: LayoutProps) => {
-  return (
-    <div className="flex">
-      <aside className="flex-0 w-64 px-6 z-10 hidden md:block">options</aside>
-      <div className="p-4 border-l bg-background border-border grow min-h-[160vh]">
-        {children}
+const Layout = async ({ children }: LayoutProps) => {
+  let session = await auth();
+  if (!session?.user) {
+    return (
+      <div className="h-screen w-screen flex flex-col items-center justify-center">
+        <p className="mb-6 text-lg">Sign in to continue</p>
+        <SignIn />
       </div>
+    );
+  }
+  return (
+    <div className="h-screen w-screen flex flex-col">
+      <Header />
+      <div className="grow container">{children}</div>
     </div>
   );
 };

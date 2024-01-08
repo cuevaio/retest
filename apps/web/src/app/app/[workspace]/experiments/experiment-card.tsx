@@ -20,7 +20,11 @@ const experimentCardVariants = cva("p-4 rounded-lg border", {
 
 export interface ExperimentCardProps
   extends ExperimentsRecord,
-    VariantProps<typeof experimentCardVariants> {}
+    VariantProps<typeof experimentCardVariants> {
+  workspaceHandle: string;
+  workspace?: any;
+  creator?: any;
+}
 
 const getExperimentStatus = (variant: string): string => {
   if (variant === "active") {
@@ -40,6 +44,7 @@ export const ExperimentCard = ({
   variant,
   startedAt,
   variantCount,
+  workspaceHandle,
 }: ExperimentCardProps) => {
   return (
     <div
@@ -48,7 +53,9 @@ export const ExperimentCard = ({
       })}
     >
       <Link
-        href={"/app/experiments/" + id.replace("rec_", "exp_")}
+        href={
+          `/app/${workspaceHandle}/experiments/` + id.replace("rec_", "exp_")
+        }
         className="font-bold text-lg hover:underline"
       >
         {name}
