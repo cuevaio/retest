@@ -1,9 +1,34 @@
-import { publicProcedure, router } from "./trpc";
-
 import { z } from "zod";
-import { getXataClient } from "@/lib/xata";
 
+import { protectedProcedure, publicProcedure, router } from "./trpc";
+
+import { WorkspacesRecord, getXataClient } from "@/lib/xata";
 let xata = getXataClient();
+
+async function getWorkspace({
+  userId,
+  workspaceHandle,
+}: {
+  userId: string;
+  workspaceHandle: string;
+}) {
+  let rel = await xata.db.workspace_user_relations
+    .select(["workspace.id"])
+    .filter({
+      user: userId,
+      workspace: {
+        handle: workspaceHandle,
+      },
+    })
+    .getFirst();
+
+  if (!rel?.workspace) {
+    throw new Error("Workspace not found");
+  }
+
+  let workspace = rel.workspace;
+  return workspace;
+}
 
 export type AppRouter = typeof appRouter;
 
@@ -15,7 +40,8 @@ export const appRouter = router({
     ];
   }),
 
-  createExperiment: publicProcedure
+  // Experiments
+  createExperiment: protectedProcedure
     .input(
       z
         .object({
@@ -25,6 +51,7 @@ export const appRouter = router({
           endedAt: z.date(),
           sampleSizeAbsolute: z.number().optional(),
           sampleSizeRelative: z.number().max(1).min(0).optional(),
+          workspaceHandle: z.string(),
         })
         .refine((data) => {
           const { sampleSizeAbsolute, sampleSizeRelative } = data;
@@ -37,35 +64,78 @@ export const appRouter = router({
         }),
     )
     .mutation(async (opts) => {
-      const { input } = opts;
-      let experiment = await xata.db.experiments.create(input);
+      const {
+        ctx: { user },
+        input,
+      } = opts;
+
+      let inputWithoutWorkspaceHandle = {
+        ...input,
+        workspaceHandle: undefined,
+      };
+      let workspace = await getWorkspace({
+        userId: user.id,
+        workspaceHandle: input.workspaceHandle,
+      });
+      let experiment = await xata.db.experiments.create({
+        ...inputWithoutWorkspaceHandle,
+        workspace: workspace.id,
+        creator: user.id,
+      });
       return experiment;
     }),
-  getActiveExperiments: publicProcedure.query(async () => {
-    let experiments = await xata.db.experiments
-      .filter({
-        endedAt: {
-          $ge: new Date(),
-        },
-      })
-      .sort("startedAt", "asc")
-      .getAll();
 
-    return experiments;
-  }),
+  getActiveExperiments: protectedProcedure
+    .input(z.object({ workspaceHandle: z.string() }))
+    .query(async (opts) => {
+      const {
+        ctx: { user },
+        input,
+      } = opts;
 
-  getInactiveExperiments: publicProcedure.query(async () => {
-    let experiments = await xata.db.experiments
-      .filter({
-        endedAt: {
-          $lt: new Date(),
-        },
-      })
-      .sort("endedAt", "desc")
-      .getAll();
+      let workspace = await getWorkspace({
+        userId: user.id,
+        workspaceHandle: input.workspaceHandle,
+      });
 
-    return experiments;
-  }),
+      let experiments = await xata.db.experiments
+        .filter({
+          endedAt: {
+            $ge: new Date(),
+          },
+          workspace: workspace.id,
+        })
+        .sort("startedAt", "asc")
+        .getAll();
+
+      return experiments;
+    }),
+
+  getInactiveExperiments: protectedProcedure
+    .input(z.object({ workspaceHandle: z.string() }))
+    .query(async (opts) => {
+      const {
+        ctx: { user },
+        input,
+      } = opts;
+
+      let workspace = await getWorkspace({
+        userId: user.id,
+        workspaceHandle: input.workspaceHandle,
+      });
+
+      let experiments = await xata.db.experiments
+        .filter({
+          endedAt: {
+            $lt: new Date(),
+          },
+          workspace: workspace.id,
+        })
+        .sort("startedAt", "asc")
+        .getAll();
+
+      return experiments;
+    }),
 
   getActiveExperimentsWithVariants: publicProcedure.query(async () => {
     let experiments = await xata.db.experiments
@@ -240,7 +310,7 @@ export const appRouter = router({
       return event;
     }),
 
-  createVariant: publicProcedure
+  createVariant: protectedProcedure
     .input(
       z.object({
         experimentId: z.string(),
@@ -357,5 +427,51 @@ export const appRouter = router({
       ]);
 
       return variant;
+    }),
+
+  // Workspaces
+  listWorkspaces: protectedProcedure.query(async (opts) => {
+    const {
+      ctx: { user },
+    } = opts;
+
+    let rels = await xata.db.workspace_user_relations
+      .select(["workspace.*"])
+      .filter({
+        user: user.id,
+      })
+      .getAll();
+
+    let workspaces: WorkspacesRecord[] = [];
+
+    rels.forEach((r) => {
+      if (r.workspace) {
+        workspaces.push(r.workspace);
+      }
+    });
+
+    return workspaces;
+  }),
+
+  getWorkspace: protectedProcedure
+    .input(z.object({ workspaceHandle: z.string() }))
+    .query(async (opts) => {
+      const {
+        ctx: { user },
+        input,
+      } = opts;
+      let rel = await xata.db.workspace_user_relations
+        .select(["workspace.*"])
+        .filter({
+          user: user.id,
+          workspace: {
+            handle: input.workspaceHandle,
+          },
+        })
+        .getFirst();
+      if (!rel) {
+        throw new Error("Workspace not found");
+      }
+      return rel.workspace as Readonly<WorkspacesRecord>;
     }),
 });

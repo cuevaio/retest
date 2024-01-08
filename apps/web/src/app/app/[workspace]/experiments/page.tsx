@@ -11,10 +11,16 @@ import {
   AccordionTrigger,
 } from "@retestlabs/ui/accordion";
 import { WrenchIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 
 const Page = () => {
-  let getActiveExperiements = trpc.getActiveExperiments.useQuery();
-  let getInactiveExperiments = trpc.getInactiveExperiments.useQuery();
+  const params = useParams<{ workspace: string }>();
+  let getActiveExperiements = trpc.getActiveExperiments.useQuery({
+    workspaceHandle: params.workspace,
+  });
+  let getInactiveExperiments = trpc.getInactiveExperiments.useQuery({
+    workspaceHandle: params.workspace,
+  });
 
   return (
     <div className="space-y-2">
@@ -28,7 +34,9 @@ const Page = () => {
             </Link>
           </Button>
           <Button asChild size="sm" variant="secondary">
-            <Link href="/app/experiments/create">New experiment</Link>
+            <Link href={`/app/${params.workspace}/experiments/create`}>
+              New experiment
+            </Link>
           </Button>
         </div>
       </div>
@@ -50,6 +58,7 @@ const Page = () => {
                   <ExperimentCard
                     variant="active"
                     key={experiment.id}
+                    workspaceHandle={params.workspace}
                     {...experiment}
                   />
                 ))}
@@ -68,6 +77,7 @@ const Page = () => {
                 .map((experiment) => (
                   <ExperimentCard
                     variant="upcoming"
+                    workspaceHandle={params.workspace}
                     key={experiment.id}
                     {...experiment}
                   />
@@ -81,6 +91,7 @@ const Page = () => {
             <div className="grid grid-cols-3 gap-4">
               {getInactiveExperiments.data?.map((experiment) => (
                 <ExperimentCard
+                  workspaceHandle={params.workspace}
                   variant="past"
                   key={experiment.id}
                   {...experiment}

@@ -10,6 +10,8 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@auth/core": "0.18.4",
+    "@auth/xata-adapter": "^0.1.10",
     "@retestlabs/ui": "workspace:*",
     "@retestlabs/utils": "workspace:*",
     "@tanstack/react-query": "^4.18.0",
@@ -22,6 +24,7 @@
     "date-fns": "^2.30.0",
     "lucide-react": "^0.294.0",
     "next": "^14.0.4",
+    "next-auth": "5.0.0-beta.4",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
