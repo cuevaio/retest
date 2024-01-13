@@ -147,6 +147,7 @@ const tables = [
       { column: "user", table: "nextauth_sessions" },
       { column: "user", table: "workspace_user_relations" },
       { column: "creator", table: "experiments" },
+      { column: "owner", table: "workspace_invites" },
     ],
   },
   {
@@ -202,10 +203,12 @@ const tables = [
     columns: [
       { name: "name", type: "string" },
       { name: "handle", type: "string", unique: true },
+      { name: "image", type: "file", file: { defaultPublicAccess: true } },
     ],
     revLinks: [
       { column: "workspace", table: "workspace_user_relations" },
       { column: "workspace", table: "experiments" },
+      { column: "workspace", table: "workspace_invites" },
     ],
   },
   {
@@ -213,7 +216,21 @@ const tables = [
     columns: [
       { name: "workspace", type: "link", link: { table: "workspaces" } },
       { name: "user", type: "link", link: { table: "nextauth_users" } },
-      { name: "isCreator", type: "bool", notNull: true, defaultValue: "false" },
+      { name: "isOwner", type: "bool", notNull: true, defaultValue: "false" },
+    ],
+  },
+  {
+    name: "workspace_invites",
+    columns: [
+      { name: "email", type: "email" },
+      { name: "owner", type: "link", link: { table: "nextauth_users" } },
+      { name: "workspace", type: "link", link: { table: "workspaces" } },
+      {
+        name: "emailsSentCount",
+        type: "int",
+        notNull: true,
+        defaultValue: "1",
+      },
     ],
   },
 ] as const;
@@ -284,6 +301,9 @@ export type WorkspacesRecord = Workspaces & XataRecord;
 export type WorkspaceUserRelations = InferredTypes["workspace_user_relations"];
 export type WorkspaceUserRelationsRecord = WorkspaceUserRelations & XataRecord;
 
+export type WorkspaceInvites = InferredTypes["workspace_invites"];
+export type WorkspaceInvitesRecord = WorkspaceInvites & XataRecord;
+
 export type DatabaseSchema = {
   experiments: ExperimentsRecord;
   variants: VariantsRecord;
@@ -304,6 +324,7 @@ export type DatabaseSchema = {
   nextauth_sessions: NextauthSessionsRecord;
   workspaces: WorkspacesRecord;
   workspace_user_relations: WorkspaceUserRelationsRecord;
+  workspace_invites: WorkspaceInvitesRecord;
 };
 
 const DatabaseClient = buildClient();

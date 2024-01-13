@@ -1,4 +1,5 @@
 import { CreateWorkspace } from "./create-workspace";
+import { WorskpaceInvites } from "./workspace-invites";
 import { WorkspaceList } from "./workspace-list";
 
 
@@ -11,6 +12,7 @@ const Page = () => {
         <div>TODO: list the workspaces her has been invited to</div>
       </div>
       <CreateWorkspace />
+      <WorskpaceInvites />
     </div>
   );
 };

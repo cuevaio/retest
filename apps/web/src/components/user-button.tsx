@@ -9,6 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@retestlabs/ui/dropdown-menu"
+
 import { SignIn, SignOut } from "./auth-buttons"
 
 export async function UserButton() {
@@ -25,7 +26,7 @@ export async function UserButton() {
                 alt={session.user.name ?? ""}
               />
             )}
-            <AvatarFallback>{session.user.email}</AvatarFallback>
+            <AvatarFallback>{session.user.email?.[0]?.toLocaleUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

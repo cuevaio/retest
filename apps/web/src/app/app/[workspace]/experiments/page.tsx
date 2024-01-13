@@ -12,6 +12,7 @@ import {
 } from "@retestlabs/ui/accordion";
 import { WrenchIcon } from "lucide-react";
 import { useParams } from "next/navigation";
+import { Title } from "@/components/title";
 
 const Page = () => {
   const params = useParams<{ workspace: string }>();
@@ -25,7 +26,7 @@ const Page = () => {
   return (
     <div className="space-y-2">
       <div className="flex justify-between">
-        <h1 className="font-bold">Experiments</h1>
+        <Title>Experiments</Title>
         <div className="flex items-center space-x-2">
           <Button asChild variant="outline" size="sm">
             <Link href="/app/setup">
