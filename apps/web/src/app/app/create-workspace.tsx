@@ -42,7 +42,7 @@ export const CreateWorkspace = () => {
         await xata.db.workspace_user_relations.create({
           workspace: workspace.id,
           user: user.id,
-          isCreator: true,
+          isOwner: true,
         });
 
         redirect(`/app/${workspace.handle}`);

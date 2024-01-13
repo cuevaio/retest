@@ -1,11 +1,29 @@
 import NextAuth from "next-auth";
+
+import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
+
 import { XataAdapter } from "@/lib/xata-nextauth-adapter";
-import authConfig from "./auth.config";
 
 export const nextAuth = NextAuth({
   adapter: XataAdapter(),
-  session: { strategy: "jwt" },
-  ...authConfig,
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+    }),
+  ],
 });
 
 export const {
@@ -14,4 +32,4 @@ export const {
   signOut,
 } = nextAuth;
 
-export const auth = () => nextAuth.auth()
+export const auth = () => nextAuth.auth();
