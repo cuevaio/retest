@@ -1,6 +1,7 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@retestlabs/ui/avatar"
 import { Button } from "@retestlabs/ui/button";
-import { auth } from "@/auth"
 
 import {
   DropdownMenu,
@@ -11,22 +12,26 @@ import {
 } from "@retestlabs/ui/dropdown-menu"
 
 import { SignIn, SignOut } from "./auth-buttons"
+import Link from "next/link";
+import { useUser } from "@/hooks/use-user";
 
-export async function UserButton() {
-  const session = await auth()
-  if (!session?.user) return <SignIn />
+export function UserButton() {
+  let { isLoading, user } = useUser();
+
+  if (!isLoading && !user) return <SignIn />
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative w-8 h-8 rounded-full">
           <Avatar className="w-8 h-8">
-            {session.user.image && (
+            {user?.image && (
               <AvatarImage
-                src={session.user.image}
-                alt={session.user.name ?? ""}
+                src={user?.image}
+                alt={user?.name ?? ""}
               />
             )}
-            <AvatarFallback>{session.user.email?.[0]?.toLocaleUpperCase()}</AvatarFallback>
+            <AvatarFallback>{user?.email?.[0]?.toLocaleUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -34,14 +39,21 @@ export async function UserButton() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {session.user.name}
+              {user?.name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {session.user.email}
+              {user?.email}
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Button variant="ghost" className="w-full justify-start p-2 h-min" asChild>
+            <Link href="/app/settings">
+              Account settings
+            </Link>
+          </Button>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <SignOut />
         </DropdownMenuItem>
       </DropdownMenuContent>

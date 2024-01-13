@@ -1,34 +1,21 @@
-import { signIn, signOut } from "@/auth"
 import { Button } from "@retestlabs/ui/button";
+import Link from "next/link";
 
-export function SignIn({
-  provider,
-  ...props
-}: { provider?: string } & React.ComponentPropsWithRef<typeof Button>) {
+export function SignIn(
+  props: React.ComponentPropsWithRef<typeof Button>) {
   return (
-    <form
-      action={async () => {
-        "use server"
-        await signIn(provider)
-      }}
-    >
-      <Button {...props}>Sign In</Button>
-    </form>
+    <Button {...props} asChild>
+      <Link href="/api/auth/signin">
+        Sign In
+      </Link>
+    </Button>
   )
 }
 
-export function SignOut(props: React.ComponentPropsWithRef<typeof Button>) {
+export function SignOut() {
   return (
-    <form
-      action={async () => {
-        "use server"
-        await signOut()
-      }}
-      className="w-full"
-    >
-      <Button variant="ghost" className="w-full p-0" {...props}>
-        Sign Out
-      </Button>
-    </form>
+    <Button variant="ghost" className="w-full justify-start p-2 h-min" asChild>
+      <Link href="/api/auth/signout">Sign Out</Link>
+    </Button>
   )
 }

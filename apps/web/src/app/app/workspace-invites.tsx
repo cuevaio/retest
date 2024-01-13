@@ -1,5 +1,6 @@
 "use client";
 
+import { Title } from "@/components/title";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@retestlabs/ui/button";
 import {
@@ -34,8 +35,18 @@ export const WorskpaceInvites = () => {
     },
   });
 
+  if (!listUserWorkspaceInvites || listUserWorkspaceInvites.data?.length === 0) {
+    return (
+      <div>
+        <Title>Workspace Invites</Title>
+        <p className="text-muted-foreground">No invites</p>
+      </div>
+    );
+  }
+
   return (
     <div>
+      <Title>Workspace Invites</Title>
       <Table>
         <TableHeader>
           <TableRow>
