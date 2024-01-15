@@ -16,14 +16,14 @@ export const NavButtons = () => {
     <div className="space-y-2">
       <Button
         variant="outline"
-        className="flex justify-start	w-full py-2 h-16 group"
+        className="flex justify-start	w-full py-2 h-16 group space-x-2"
         asChild
       >
         <Link href="/app">
-          <Avatar className="w-12 h-12 group-hover:hidden">
+          <Avatar className="flex-none w-12 h-12 group-hover:hidden">
             <AvatarFallback>{params.workspace[0]}</AvatarFallback>
           </Avatar>
-          <span className="font-bold text-lg ml-2 group-hover:hidden">
+          <span className="font-bold text-lg group-hover:hidden">
             {getWorkspace.data?.name}
           </span>
           <span className="mx-auto hidden group-hover:block">
@@ -40,6 +40,9 @@ export const NavButtons = () => {
       </Button>
       <Button variant="ghost" className="w-full" asChild>
         <Link href={`/app/${params.workspace}/members`}>Members</Link>
+      </Button>
+      <Button variant="ghost" className="w-full" asChild>
+        <Link href={`/app/${params.workspace}/settings`}>Settings</Link>
       </Button>
     </div>
   );

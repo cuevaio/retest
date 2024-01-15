@@ -347,4 +347,47 @@ export const workspacesRoutes = {
 
       return true;
     }),
+
+  updateWorkspaceName: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        workspaceHandle: z.string(),
+      }),
+    )
+    .mutation(async (opts) => {
+      const {
+        input,
+        ctx: { user },
+      } = opts;
+
+
+      let rel = await xata.db.workspace_user_relations
+        .select(["workspace.id"])
+        .filter({
+          user: user.id,
+          workspace: {
+            handle: input.workspaceHandle,
+          },
+        })
+        .getFirst();
+      if (!rel?.workspace) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found",
+        });
+      }
+
+      let handle: string =
+        input.name.trim().replace(/\s+/g, "-").toLowerCase() +
+        "-" +
+        Math.random().toString(36).substring(2, 8);
+
+      let updatedWorkspace = await xata.db.workspaces.update(rel.workspace.id, {
+        handle,
+        name: input.name
+      });
+
+      return updatedWorkspace;
+    }),
 };

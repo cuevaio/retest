@@ -39,7 +39,7 @@ export const WorskpaceInvites = () => {
     return (
       <div>
         <Title>Workspace Invites</Title>
-        <p className="text-muted-foreground">No invites</p>
+        <p className="text-sm text-muted-foreground">You don't have invites</p>
       </div>
     );
   }
